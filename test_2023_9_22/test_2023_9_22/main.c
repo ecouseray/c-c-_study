@@ -228,18 +228,20 @@ int (*)[5] 数组指针
 一个问题：数组指针存数组，是因为数组在内存中是有空间的，但是函数，他只有在调用的使用才创建函数栈帧，那这个指针在不调用函数的时候不就是野指针了吗？
 函数和全局变量是一样的，都是写好之后就有地址
 */
-int add(int a, int b)
-{
-	return a + b;
-}
-int main()
-{
-	//printf("%p\n", &add);
-	//printf("%p\n", add);
-	int (*padd)(int, int) = add;
-	printf("%d\n", padd(2, 3));
-	return 0;
-}
+//int add(int a, int b)
+//{
+//	return a + b;
+//}
+//int main()
+//{
+//	//printf("%p\n", &add);
+//	//printf("%p\n", add);
+//	int (*padd)(int, int) = add;
+// 
+//	printf("%d\n", padd(2, 3));
+//	printf("%d\n", （*padd）(2, 3));
+//	return 0;
+//}
 /*
 在C语言中，如果函数名出现在表达式中，它会自动转换为指向该函数的指针。因此，在赋值给函数指针时，我们不需要使用取地址操作符& 来获取函数的地址。
 
@@ -251,3 +253,428 @@ int main()
 
 所以，当你使用 padd(2, 3) 调用 padd 时，它会自动解析为调用 add(2, 3)，并返回计算结果。无需显式解引用函数指针。
 */
+
+
+////代码1
+//(*(void (*)())0)();
+////代码2
+//void (*signal(int, void(*)(int)))(int);
+
+//int main()
+//{
+//	(*(void (*)())0)();
+//	//void (*)()  函数指针
+//	//()将 0 强转为 函数指针
+//	//* 对函数指针解引用 之后调用
+//	//调用 0 地址 处 的 函数
+//	return 0;
+//}
+
+
+//	int (*padd)(int, int) = add;
+//                              函数指针类型
+//typedef void(*pf_t)(int); //把void(*)(int)类型重命名为pf_t
+//int main()
+//{
+//	void (*signal(int, void(*)(int)))(int);
+//// 这里是一次函数的声明， 声明的signal函数的第一个参数的类型是int,第二个参数的类型是函数指针，该函数指针指向的函数，函数参数是int，返回值是void
+//// signal 函数的返回类型也是一个函数指针，该函数指针所指向的函数，函数参数是int，返回类型是void
+//
+//	pf_t signal(int, pf_t);
+//
+//	return 0;
+//}
+
+
+
+
+// 因为感觉之前使用函数指针都是脱裤子放屁，没有必要啊
+// 所以
+// 
+// 函数指针的实际应用
+
+//void menu()
+//{
+//	printf("*****************************\n");
+//	printf("****   1. add   2. sub  *****\n");
+//	printf("****   3. mul   4. div  *****\n");
+//	printf("****   0. exit          *****\n");
+//	printf("*****************************\n");
+//}
+//
+//int Add(int x, int y)
+//{
+//	return x + y;
+//}
+//int Sub(int x, int y)
+//{
+//	return x - y;
+//}
+//int Mul(int x, int y)
+//{
+//	return x * y;
+//}
+//int Div(int x, int y)
+//{
+//	return x / y;
+//}
+//
+////
+////计算
+////回调函数
+////
+//
+//void calc(int (*pf)(int , int))
+//{
+//	int x = 0;
+//	int y = 0;
+//	int ret = 0;
+//
+//	printf("请输入2个操作数:>");
+//	scanf("%d %d", &x, &y);
+//	ret = pf(x, y);
+//	printf("%d\n", ret);
+//}
+//
+//int main()
+//{
+//	int input = 0;
+//
+//	do
+//	{
+//		menu();
+//		printf("请选择:>");
+//		scanf("%d", &input);
+//		
+//		switch (input)
+//		{
+//		case 1:
+//			calc(Add);
+//			break;
+//		case 2:
+//			calc(Sub);
+//			break;
+//		case 3:
+//			calc(Mul);
+//			break;
+//		case 4:
+//			calc(Div);
+//			break;
+//		case 0:
+//			printf("退出计算器\n");
+//			break;
+//		default:
+//			printf("选择错误\n");
+//			break;
+//		}
+//	} while (input);
+//
+//	return 0;
+//}
+
+//int add(int x, int y)
+//{
+//	return x + y;
+//}
+//int sub(int x, int y)
+//{
+//	return x - y;
+//}
+//int mul(int x, int y)
+//{
+//	return x * y;
+//}
+//
+//int main()
+//{
+//	//int (*pf_add)(int, int) = add;
+//
+//	int (*pf_add)(int, int) = add;
+//
+//	int (*(arr_p_f[4]))(int, int) = { add, sub, mul };
+//
+//	int (*arr_p_f1[4])(int, int) = { add, sub, mul };
+//
+//	return 0;
+//}
+
+
+
+
+//x&y
+//x^y
+//x|y
+//x&&y
+//x||y
+//x>>y
+//x<<y
+//
+//void menu()
+//{
+//	printf("*****************************\n");
+//	printf("****   1. add   2. sub  *****\n");
+//	printf("****   3. mul   4. div  *****\n");
+//	printf("****   0. exit          *****\n");
+//	printf("*****************************\n");
+//}
+//
+//int Add(int x, int y)
+//{
+//	return x + y;
+//}
+//int Sub(int x, int y)
+//{
+//	return x - y;
+//}
+//int Mul(int x, int y)
+//{
+//	return x * y;
+//}
+//int Div(int x, int y)
+//{
+//	return x / y;
+//}
+//
+//int main()
+//{
+//	int input = 0;
+//	int x = 0;
+//	int y = 0;
+//	int ret = 0;
+//
+//	//函数指针的数组
+//	//转移表
+//	int (*pfArr[])(int, int) = {0, Add, Sub, Mul,  Div};
+//
+//	do
+//	{
+//		menu();
+//		printf("请选择:>");
+//		scanf("%d", &input);
+//		if (input == 0)
+//		{
+//			printf("退出计算器\n");
+//		}
+//		else if (input >= 1 && input <= 4)
+//		{
+//			printf("请输入2个操作数:>");
+//			scanf("%d %d", &x, &y);
+//			ret = pfArr[input](x, y);
+//			printf("%d\n", ret);
+//		}
+//		else
+//		{
+//			printf("选择错误\n");
+//		}
+//
+//	} while (input);
+//
+//	return 0;
+//}
+
+
+
+
+// 指向函数指针数组的指针
+
+//int add(int x, int y)
+//{
+//	return x + y;
+//}
+//int main()
+//{
+//
+//	int (*pfArr[])(int, int) = { 0, Add, Sub, Mul,  Div };
+//
+//	int (*(*pfArrP)[5]) (int, int) = &pfArr;
+//
+//
+//
+//	int(*(*pfArrP)[5]) (int, int) = &pfArr;
+//
+//
+//	return 0;
+//}
+
+
+
+/*
+
+回调函数
+
+回调函数就是一个通过函数指针调用的函数。如果你把函数的指针（地址）作为参数传递给另一个
+函数，当这个指针被用来调用其所指向的函数时，我们就说这是回调函数。回调函数不是由该函数
+的实现方直接调用，而是在特定的事件或条件发生时由另外的一方调用的，用于对该事件或条件进
+行响应。
+
+*/
+
+//void bubble_sort(int* arr, int sz)
+//{
+//	int i = 0;
+//	int j = 0;
+//	
+//	for (i = 0; i < sz - 1; i++)
+//	{
+//		int flag = 1;
+//		for (j = 0; j < sz - 1 - i; j++)
+//		{
+//			int tmp = arr[j];
+//			arr[j] = arr[j + 1];
+//			arr[j + 1] = tmp;
+//			flag = 0;
+//		}
+//		if (flag == 1)
+//			break;
+//	}
+//}
+//
+//int main()
+//{
+//	int arr[10] = { 0, 2, 4, 6, 8, 10, 1,3,5,7 };
+//	int sz = sizeof(arr) / sizeof(arr[0]);
+//	bubble_sort(arr, sz);
+//
+//	return 0;
+//}
+
+
+
+
+
+
+
+
+
+//qsort
+
+//qsort -这个函数可以排序任意类型的数据
+//
+
+//void qsort(void* base,//你要排序的数据的起始位置
+//	       size_t num,//待排序的数据元素的个数
+//	       size_t width,//待排序的数据元素的大小（单位是字节）
+//	       int(* cmp)(const void* e1, const void* e2)//函数指针-比较函数
+//          );
+//__cdecl - 函数调用约定
+
+// qsort 返回值 >0 =0 <0
+// qsort 默认升序，要想降序，处理cmp函数中的两个元素，使其相反
+
+
+#include <stdlib.h>
+
+//比较2个整型元素
+//e1指向一个整数
+//e2指向另外一个整数
+
+//int cmp_int(const void* e1, const void* e2)
+//{
+//	return (*(int*)e1 - *(int*)e2);
+//}
+//
+//void test1()
+//{
+//	//int arr[] = { 9,8,7,6,5,4,3,2,1,0 };
+//	int arr[] = { 0,1,2,3,4,5,6,7,8,9 };
+//	//0 1 2 3 4 5 6 7 8 9
+//	//把数组排成升序
+//	int sz = sizeof(arr) / sizeof(arr[0]);
+//	//bubble_sort(arr, sz);
+//
+//	qsort(arr, sz, sizeof(arr[0]), cmp_int);
+//
+//	int i = 0;
+//	for (i = 0; i < sz; i++)
+//	{
+//		printf("%d ", arr[i]);
+//	}
+//}
+
+//int main()
+//{
+//	int a = 10;
+//	//char* pa = &a;//int*
+//	void* pv = &a;//void*是无具体类型的指针，可以接受任意类型的地址
+//	//void*是无具体类型的指针，所以不能解引用操作，也不能+-整数
+//	//
+//	return 0;
+//}
+//
+
+
+
+
+
+void bubble_sort(int* arr, int sz)
+{
+	int i = 0;
+	int j = 0;
+	
+	for (i = 0; i < sz - 1; i++)
+	{
+		int flag = 1;
+		for (j = 0; j < sz - 1 - i; j++)
+		{
+			int tmp = arr[j];
+			arr[j] = arr[j + 1];
+			arr[j + 1] = tmp;
+			flag = 0;
+		}
+		if (flag == 1)
+			break;
+	}
+}
+
+
+//void Swap(char* buf1, char* buf2, int width)
+//{
+//	int i = 0;
+//	for (i = 0; i < width; i++)
+//	{
+//		char tmp = *buf1;
+//		*buf1 = *buf2;
+//		*buf2 = tmp;
+//		buf1++;
+//		buf2++;
+//	}
+//}
+
+void bubble_sort(void* base, int sz, int width, int(*cmp)(const void* e1, const void* e2))
+{
+	int i = 0;
+	//趟数
+	for (i = 0; i < sz - 1; i++)
+	{
+		int flag = 1;//假设数组是排好序
+		//一趟冒泡排序的过程
+		int j = 0;
+		for (j = 0; j < sz - 1 - i; j++)
+		{
+			if (cmp((char*)base + j * width, (char*)base + (j + 1) * width) > 0)
+			{
+				//交换
+				Swap((char*)base + j * width, (char*)base + (j + 1) * width, width);
+				flag = 0;
+			}
+		}
+		if (flag == 1)
+		{
+			break;
+		}
+	}
+}
+
+//void qsort(void* base,//你要排序的数据的起始位置
+//	       size_t num,//待排序的数据元素的个数
+//	       size_t width,//待排序的数据元素的大小（单位是字节）
+//	       int(* cmp)(const void* e1, const void* e2)//函数指针-比较函数
+//          );
+//__cdecl - 函数调用约定
+
+
+// qsort 作者 不知道 未来使用这个qsort函数比较的人，需要比较的数据是什么类型的
+// 
+// 泛型
+
+// 既然不知道是什么类型的， 传 width，和 元素个数 就能找到之后 操作数据了
