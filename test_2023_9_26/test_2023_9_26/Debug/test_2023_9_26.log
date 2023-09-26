@@ -1,0 +1,9 @@
+﻿  main.c
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(86,25): warning C4013: “strerror”未定义；假设外部返回 int
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(86,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(87,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(88,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(89,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(90,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+D:\code\c_study\test_2023_9_26\test_2023_9_26\main.c(91,9): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“int”
+  test_2023_9_26.vcxproj -> D:\code\c_study\test_2023_9_26\Debug\test_2023_9_26.exe
