@@ -1,0 +1,3 @@
+﻿  main.c
+D:\code\c_study\test_2023_9_27\test_2023_9_27\main.c(49): warning C4716: “myMemmove”: 必须返回一个值
+  test_2023_9_27.vcxproj -> D:\code\c_study\test_2023_9_27\Debug\test_2023_9_27.exe
