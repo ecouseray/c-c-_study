@@ -4,7 +4,15 @@
 #include "snack.h"
 
 
+int score = 0;
+// 用于记录分数
 
+
+int kx = 0;  // 用户按下wasd得到的坐标值
+int ky = 0;
+
+int lastX;
+int lastY;
 
 
 
@@ -31,9 +39,13 @@ void game()
 	//printf("food:x = %d, y = %d\n", food.x, food.y);
 
 	initUI();
+	playGame();
+
+	printf("%d\n", score);
 }
 int main()
 {
+	//_kbhit();
 	srand((unsigned int)time(NULL));
 	menu();
 	int input = 1;
@@ -84,6 +96,7 @@ void initFood(void)
 
 void initUI(void)
 {
+	// 输出蛇
 	COORD coord;
 	for (size_t i = 0; i < snack.snackBodyCount; i++)
 	{
@@ -96,12 +109,104 @@ void initUI(void)
 		else
 			putchar('*');
 	}
+	// 输出食物
 	coord.X = food.x;
 	coord.Y = food.y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 	putchar('#');
 
+	// 将光标回到游戏界面的下面
 	coord.X = 0;
 	coord.Y = HIGH + 2;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+// 输入不回显接受用户输入
+// getch()    getchar()回显
+// 控制台里面，命令行闪烁，等待输入 -- 阻塞等待
+// 当前小游戏中，不可以阻塞等待
+// kbhit(); 不阻塞判断用户输入
+// 有输入返回‘真’，没输入返回‘假’
+//  
+
+void playGame(void)
+{
+	//Sleep(960);
+	char key = 'd';
+
+	// 是否撞墙或者碰到自己的身体
+	while (
+		snack.snackBodyList[0].x >= 0 && snack.snackBodyList[0].x < WIDE &&
+		snack.snackBodyList[0].y >= 0 && snack.snackBodyList[0].y < HIGH 
+		  )
+	{
+		initUI();
+		
+
+		// 接受用户输入操作
+		if (_kbhit())
+		{
+			key = _getch();
+		}
+		
+		// 蛇的前一节身体给后一节身体赋值，蛇头 + 输入的 k 值
+
+		switch (key)
+		{
+		case 'w':
+			kx = 0, ky = -1;
+			break;
+		case 'a':
+			kx = -1, ky = 0;
+			break;
+		case 's':
+			kx = 0, ky = 1;
+			break;
+			
+		case 'd':
+			kx = 1, ky = 0;
+			break;
+		default:
+			break;
+		}
+
+		int i = 0;
+		for (i = 1; i < snack.snackBodyCount; i++)
+		{
+			if (
+				snack.snackBodyList[0].x == snack.snackBodyList[i].x &&
+				snack.snackBodyList[0].y == snack.snackBodyList[i].y
+			   )
+				// return; // 蛇头撞身体
+					goto flag;
+		}
+
+		if (snack.snackBodyList[0].x == food.x && snack.snackBodyList[0].y == food.y)
+		{
+			// 蛇的身体变长
+			snack.snackBodyCount++;
+			// 食物消失（产生一个新的食物）
+			initFood();
+
+			lastX = snack.snackBodyList[snack.snackBodyCount - 1].x;
+			lastY = snack.snackBodyList[snack.snackBodyCount - 1].y;
+
+			for (size_t i = snack.snackBodyCount - 1; i > 0; i--)
+			{
+				snack.snackBodyList[i].x = snack.snackBodyList[i - 1].x;
+				snack.snackBodyList[i].y = snack.snackBodyList[i - 1].y;
+			}
+			snack.snackBodyList[0].x += kx;
+			snack.snackBodyList[0].y += ky;
+
+			// 分数增加；
+			score += 10;
+			// 蛇的速度提高...
+		}
+		
+		//system("cls"); 
+
+	}
+flag://flag 的位置相当于游戏结束
+	return;
 }

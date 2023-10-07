@@ -6,8 +6,8 @@
 #include <conio.h>
 #include <windows.h>
 
-#define WIDE 70
-#define HIGH 20
+#define WIDE 40
+#define HIGH 40
 
 
 struct FOOD
@@ -32,8 +32,8 @@ struct SNACK
 	// 用于记录当前蛇的长 
 }snack;
 
-int score = 0;
-// 用于记录分数
+
+
 
 
 void initFood(void);
@@ -41,3 +41,5 @@ void initFood(void);
 void initSnack(void);
 
 void initUI(void);
+
+void playGame(void);
