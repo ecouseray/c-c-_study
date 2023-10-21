@@ -7,6 +7,7 @@ int main()
 	SListPushBack(&phead, 2);
 	SListPushBack(&phead, 3);
 	SListPushBack(&phead, 4);
+	//SListPushBack(phead, 4);
 	SListPrint(phead);
 	SListPopBack(&phead);
 	return 0;

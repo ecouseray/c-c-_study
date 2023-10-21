@@ -31,9 +31,10 @@ int main(void)
 
 	SListPopFront(&pSlist);
 
-	//SListPopBack(&pSlist);
-	//SListPopBack(&pSlist);
-	//SListPopBack(&pSlist);
+	SListPopBack(&pSlist);
+	SListPopBack(&pSlist);
+	SListPopBack(&pSlist);
+	SListPrint(pSlist);
 	return 0;
 }
 

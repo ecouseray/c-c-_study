@@ -66,6 +66,25 @@ void SListPopBack(SListNode** pphead)
 	}
 }
 
+
+//void SListPushBack(SListNode* phead, SListDataType x)
+//{
+//	SListNode* newNode = creatNewNode(x);
+//	if (phead == NULL)
+//	{
+//		phead = newNode;
+//	}
+//	else
+//	{
+//		SListNode* tail = phead;
+//		while (tail->next != NULL)
+//		{
+//			tail = tail->next;
+//		}
+//		tail->next = newNode;
+//	}
+//}
+
 //void SListPopBack(SListNode** pphead)
 //{
 //	assert(pphead);

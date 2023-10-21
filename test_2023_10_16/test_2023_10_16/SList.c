@@ -2,7 +2,7 @@
 
 static SListNode* creatNewNode(SListDataType x)
 {
-	SListNode* newNode = (SListNode*)malloc(sizeof(SListDataType));
+	SListNode* newNode = (SListNode*)malloc(sizeof(SListNode));
 	if (newNode == NULL)
 	{
 		printf("ÉêÇëÄÚ´æÊ§°Ü\n");
@@ -75,14 +75,9 @@ void SListPopBack(SListNode** pphead)
 void SListPushFront(SListNode** pphead, SListDataType x)
 {
 	SListNode* newNode = creatNewNode(x);
-	if (*pphead == NULL)
-	{
-		*pphead = newNode;
-	}
-	else
-	{
-		newNode->next = *pphead;
-	}
+	newNode->next = *pphead;
+	*pphead = newNode;
+
 }
 void SListPopFront(SListNode** pphead)
 {
