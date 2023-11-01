@@ -22,3 +22,5 @@ void ListPopBack(ListNode* phead);
 
 void ListPushFront(ListNode* phead, ListDataType x);
 void ListPopFront(ListNode* phead);
+void ListDestory(ListNode* phead);
+void ListClear(ListNode** pphead);

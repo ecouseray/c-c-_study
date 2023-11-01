@@ -82,3 +82,27 @@ void ListPopFront(ListNode* phead)
 
 	free(cur);
 }
+
+void ListClear(ListNode* phead)
+{
+	// 清理所有数据节点，保留头节点，可以继续使用
+	assert(phead);
+	ListNode* cur = phead->next;
+	while (cur != phead)
+	{
+		ListNode* next = cur->next;
+		free(cur);
+		cur = next;
+	}
+	phead->next = phead;
+	phead->prev = phead;
+}
+
+void ListDestory(ListNode** pphead)
+{
+	assert(*pphead);
+	// 销毁
+	ListClear(*pphead);
+	free(*pphead);
+	*pphead = NULL;
+}
