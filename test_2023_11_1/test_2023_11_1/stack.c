@@ -48,7 +48,6 @@ void StackPop(Stack* pst)
 	assert(pst->_top > 0);
 	//if (pst->_top > 0)
 	--pst->_top;
-
 }
 
 int StackSize(Stack* pst)
