@@ -11,21 +11,21 @@ void Swap(heapDataType* p1, heapDataType* p2)
 void ADjustDown(heapDataType* a, int n, int root)
 {
 	int parent = root;
-	int child = parent * 2 + 1;
+	int minchild = parent * 2 + 1;
 
-	while (child < n)
+	while (minchild < n)
 	{
 		// 假设默认认为左孩子小；如果这个堆没有右节点，会越界，所以要判断child+1<n
-		if (child + 1 < n && a[child + 1] > a[child])
+		if (minchild + 1 < n && a[minchild + 1] < a[minchild])
 		{
-			++child;// 如果右孩子比左孩子还小，让index到右孩子
+			++minchild;// 如果右孩子比左孩子还小，让index到右孩子
 		}
 		// 如果孩子小于父亲，交换
-		if (a[child] > a[parent])
+		if (a[minchild] < a[parent])
 		{
-			Swap(&a[child], &a[parent]);
-			parent = child;
-			child = parent * 2 + 1;
+			Swap(&a[minchild], &a[parent]);
+			parent = minchild;
+			minchild = parent * 2 + 1;
 		}
 		else
 		{
@@ -36,6 +36,7 @@ void ADjustDown(heapDataType* a, int n, int root)
 
 void ADjustUp(heapDataType* a, int n, int child)
 {
+	// 父节点 = (子节点 - 1) / 2;
 	int parent = (child - 1) / 2;
 	while (child > 0)
 	{
@@ -50,26 +51,6 @@ void ADjustUp(heapDataType* a, int n, int child)
 			break;
 		}
 	}
-
-	//while (child < n)
-	//{
-	//	// 假设默认认为左孩子小；如果这个堆没有右节点，会越界，所以要判断child+1<n
-	//	if (child + 1 < n && a[child + 1] > a[child])
-	//	{
-	//		++child;// 如果右孩子比左孩子还小，让index到右孩子
-	//	}
-	//	// 如果孩子小于父亲，交换
-	//	if (a[child] > a[parent])
-	//	{
-	//		Swap(&a[child], &a[parent]);
-	//		parent = child;
-	//		child = parent * 2 + 1;
-	//	}
-	//	else
-	//	{
-	//		break;
-	//	}
-	//}
 }
 
 void HeapInit(heap* php, heapDataType* a, int n)
@@ -112,7 +93,7 @@ void HeapPush(heap* php, heapDataType x)
 void HeapPop(heap* php)
 {
 	assert(php);
-	assert(php->_size  > 0);
+	assert(php->_size > 0);
 
 	Swap(&php->_a[0], &php->_a[php->_size - 1]);
 	php->_size--;
@@ -121,6 +102,6 @@ void HeapPop(heap* php)
 }
 heapDataType HeapTop(heap* php)
 {
-
-
+	assert(php);
+	return php->_a[0];
 }
