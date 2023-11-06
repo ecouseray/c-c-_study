@@ -33,7 +33,6 @@ void PrevOrder(BTNode* root)
 		printf("NULL ");
 		return;
 	}
-		
 	printf("%c ", root->_data);
 	PrevOrder(root->_left);
 	PrevOrder(root->_right);
@@ -60,6 +59,8 @@ int TreeSize(BTNode* root)
 BTNode* CreateNode(int x)
 {
 	BTNode* node = (BTNode*)malloc(sizeof(BTNode));
+	if (node == NULL)
+		exit(-1);
 	node->_data = x;
 	node->_left = NULL;
 	node->_right = NULL;
