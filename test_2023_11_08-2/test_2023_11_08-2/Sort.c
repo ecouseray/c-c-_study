@@ -2,6 +2,42 @@
 
 // ¿ìËÙÅÅĞò
 
+int GetMidIndex(int* a, int begin, int end)
+{
+	int mid = (begin + end) / 2;
+	if (a[begin] < a[mid])
+	{
+		if (a[mid] < a[end])
+		{
+			return mid;
+		}
+		else if (a[begin] > a[end])
+		{
+			return begin;
+		}
+		else
+		{
+			return end;
+		}
+	}
+	else  //(a[begin] > a[mid])
+	{
+		if (a[mid] > a[end])
+		{
+			return mid;
+		}
+		else if (a[begin] < a[mid])
+		{
+			return begin;
+		}
+		else
+		{
+			return end;
+		}
+	}
+}
+
+
 void Swap(int* p1, int* p2)
 {
 	int tmp = *p1;
@@ -11,6 +47,10 @@ void Swap(int* p1, int* p2)
 
 int PartSort(int* arr, int begin, int end)
 {
+	int midIndex = GetMidIndex(arr, begin, end);
+	Swap(&arr[midIndex], &arr[end]);
+
+
 	int keyIndex = end;
 	while (begin < end)
 	{
