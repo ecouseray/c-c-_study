@@ -1,0 +1,880 @@
+﻿/*
+
+27.移除元素
+
+思路：
+    两个指针(下标)(src, dst)，初始时同时指向数组的第一个元素，用src所指向的元素与val比较，
+    如果不相同，则将src指向位置元素拷入dst指向的位置，之后src和dst指针向后走；
+    如果相同，则src直接向后走
+    (src一直向后走，遍历整个数组，dst只有在向其位置上拷贝元素才向后走)
+
+    如果是空数组，直接返回
+
+    返回值，返回dst
+
+实现：
+int removeElement(int* nums, int numsSize, int val) {
+    int src = 0, dst = 0;
+    // 如果为空数组，不进入循环，直接返回
+    while (src < numsSize)
+    {
+        if (nums[src] != val)
+        {
+            nums[dst] = nums[src];
+            src++, dst++;
+        }
+        else
+        {
+            src++;
+        }
+    }
+    return dst;
+}
+
+*/
+
+/*
+
+26.删除排序数组中的相同元素
+
+思路：
+    如果是空数组直接返回；
+
+    借助上一题的思路；使用三个指针(下标)(dst:拷贝到...、cur:当前元素、prev:前一个元素)
+    用cur、prve元素相比，
+    如果相同，cur和prve向后移动；
+    如果不相同，拷贝prve处的元素到dst处，之后cur、prve、dst后向移动
+
+    特殊情况：
+        最后一个元素，如果和前一个元素不相同的话，没有办法拷贝到dst处
+        最后一个元素，如果和前一个元素相同的话，
+        虽然cur指针已经越界，但是任然可以将元素拷贝到dst处(越界之后不解引用(不操作))
+
+实现：
+int removeDuplicates(int* nums, int numsSize){
+    if (numsSize == 0)
+        return 0;
+    int prev = 0, cur = 1, dst = 0;
+    while(cur < numsSize)
+    {
+        if (nums[prev] == nums[cur])
+        {
+            prev++, cur++;             
+        }
+        else
+        {
+            nums[dst] = nums[prev];
+            prev++, cur++, dst++; 
+        }
+    }
+    // 特殊情况处理
+    nums[dst] = nums[prev];
+    dst++, prev++;
+    return dst;
+}
+
+*/
+
+989.数组形式的整形加法
+    
+思路：
+    numsSize 就是 数组对应的这个整数的长度
+    所以上来先计算出k的位数
+    返回值的长度就是：numsSize 和 k 中较大位数 + 1
+
+    难点：
+        相加时进位(进位进出来，最前面的一位进位)
+
+实现：
+int* addToArrayForm(int* num, int numSize, int k, int* returnSize){ 
+    int kTmp = k;
+    int kSize = 1;
+    // 134
+    while(kTmp / 10)
+    {
+        ++kSize;
+        kTmp /= 10;
+    }
+
+    int len = numSize > kSize ? numSize : kSize;
+    int* retArr = (int*)malloc(sizeof(int) * (len + 1));
+
+    int Arri = numSize - 1; // 这个变量是用来记录计算时  数组的下标的
+    // 这里是一个整数 + 一个数组，如果是两个大数相加，都是数组，可以用两个变量来控制
+
+    // Arri[]
+    // k
+
+    int reti = 0; // 这个变量用来记录返回数组中的下标
+    int nextNum = 0; // 进位
+    while(len--)
+    {
+        // 为什么不直接在ret的地方让num[Arri] + k % 10 + nextNum
+        // 如果整数很长，但是数组很短，数组就会向前(栈上向栈顶)越界访问
+        // 默认为0，当Arri为0之后，下次再加的时候就不是使用数组中的值了，就是默认的a充当数组的下一位
+        int a = 0;
+        if (Arri >= 0)
+        {
+            a = num[Arri];
+            Arri--;
+        }
+
+        // 这个变量存放每一位相加之后的值
+        int ret = a + k % 10 + nextNum;
+        //int ret = num[Arri] + k % 10;
+        
+        k /= 10;
+        // 顺着放，之后逆置一下,因为n位数+n位数有可能加出来n+1位数
+        if (ret > 9)
+        {
+            nextNum = 1;
+            ret -= 10; 
+        }
+        else
+        {
+            nextNum = 0;
+        }
+
+        retArr[reti] = ret;
+        reti++;
+    }
+
+    // 出现这个问题是:前面循环次数是len次，如果最高位进位进出来的话，就没有计算到
+    if(nextNum == 1)
+    {
+        retArr[reti] = 1;
+        reti++;
+    }
+
+    // 逆置
+    int left = 0, right = reti - 1;
+    while(left < right)
+    {
+        int tmp = retArr[left];
+        retArr[left] = retArr[right];
+        retArr[right] = tmp;
+        left++, right--;
+    }
+
+    *returnSize = reti;
+    return retArr;
+}
+    
+*/
+
+===============================================================================================
+
+/*
+
+206.反转链表
+
+思路：
+    方法一：
+        使用三个指针
+        第一个指针指向空，第二个指针指向头节点，第三个指针指向头节点的下一个元素(目的是防止丢失)
+        让第二个指针指向第一个指针，之后迭代
+        第一个指针 = 第二个指针 第二个指针 = 第三个指针， 第三个指针 = 第三个指针的next节点
+    方法二：
+        头插的思路解决
+        定义一个指针作为新头，原链表中拿出来一个一点，头差到新头上，之后让插入的节点作为新头
+
+实现：
+struct ListNode* reverseList(struct ListNode* head){
+    if (head || head->next == NULL)
+        return head;
+
+    struct ListNode* prev = NULL;
+    struct ListNode* cur = head;
+    struct ListNode* next = head->next;
+    while(cur != NULL)
+    {
+        cur->next = prev;
+
+        prev = cur;
+        cur = next;
+        if (next != NULL)
+            next = next->next;
+    }
+}
+
+struct ListNode* reverseList(struct ListNode* head){
+
+    struct ListNode* newHead = NULL;
+    struct ListNode* cur = head;
+
+    // 注意点：这里的第三个指针，不可以定义在外面，因为如果定义在外面，如果是空指针直接就崩了
+    // 这里想让空链表和非空链表使用同一个逻辑
+    while (cur != NULL)
+    {
+        struct ListNode* next = cur->next;
+        cur->next = newHead;
+        newHead = cur;
+        cur = next;
+    }
+
+  return newHead;
+}
+*/
+
+/*
+
+203.移除链表元素
+
+思路：
+    最少需要两个指针，记录要删除的节点和上一个节点
+    因为有特殊情况，所以可以刚上来就让head->val判断，如果是删除的元素就直接向后走
+
+    特殊情况：第一个元素就是要删除的元素
+
+实现：
+typedef struct ListNode Node;
+struct ListNode* removeElements(struct ListNode* head, int val){
+    Node* prev = NULL, *cur = head;
+
+    while(cur != NULL)
+    {
+        if(cur->val == val)
+        {
+            if (cur == head)
+            {
+                head = head->next;
+                free(cur);
+                cur = head;
+            }
+            else
+            {
+                Node* next = cur->next;
+                prev->next = cur->next;
+                free(cur);
+                cur = next;
+
+            }
+        }
+        else 
+        {
+            prev = cur;
+            cur = cur->next;
+        }       
+    }
+    return head;
+}
+
+*/
+
+/*
+
+876.链表的中间节点
+
+思路：
+    快慢指针，一个指针走两步，一个指针走一步，走两步到到NULL了，走一步的就到中间了
+
+    两种情况：偶数个节点和奇数个节点，所以结束条件是tail == NULL || tail->next==NULL
+
+实现：
+typedef struct ListNode Node;
+struct ListNode* middleNode(struct ListNode* head){
+    Node* slow = head;
+    Node* fast = head;
+
+    while(fast != NULL && fast->next != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+*/
+
+
+21.合并两个有序链表 -- 可优化(哨兵位的头节点)
+/*
+
+21.合并两个有序链表
+
+思路：
+    三个指针，一个指向新头，另外两个分别指向两个有序链表的头节点
+    比较两个链表的元素，小的尾插到新头处
+
+    注意点：需要将较小的现为头头节点
+
+    可以优化，哨兵位的头节点
+
+实现：
+typedef struct ListNode Node;
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2){
+    if (list1 == NULL)
+        return list2;
+    if (list2 == NULL)
+        return list1;
+
+    Node* head = NULL, *tail = NULL;
+    if (list1->val <= list2->val)
+    {
+        head = tail = list1;
+        list1 = list1->next;
+        // 如果l1里面只有一个元素呢？
+    }
+    else
+    {
+        head = tail = list2;
+        list2 = list2->next;
+        // 如果l2里面只有一个元素呢？
+    }
+    while(list1 && list2)
+    {
+        if (list1->val <= list2->val)
+        {
+            tail->next = list1;
+            list1 = list1->next;
+        }
+        else
+        {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+    if (list1)
+        tail->next = list1;
+    else if(list2)
+        tail->next = list2;
+    return head;
+}
+
+优化实现：
+typedef struct ListNode Node;
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2){
+    if (list1 == NULL)
+        return list2;
+    if (list2 == NULL)
+        return list1;
+
+    Node* head, *tail = (Node*)malloc(sizeof(Node));
+
+    while(list1 && list2)
+    {
+        if (list1->val <= list2->val)
+        {
+            tail->next = list1;
+            list1 = list1->next;
+        }
+        else
+        {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+    if (list1)
+        tail->next = list1;
+    else if(list2)
+        tail->next = list2;
+
+    Node* tmpHead = Head->next;
+    free(head);
+    free(tail);
+    return tmpHead;
+    //return head;
+}
+
+*/
+
+剑指Offer - 56 数组中只出现一次
+/*
+
+剑指Offer - 56 数组中只出现一次
+
+思路：
+    所有的数先异或，结果是只出现了一次的两个数异或的结果
+    分组：按照两个数异或的结果的二进制位异或(从右向左第一个1的pos)
+    如果和pos异或之后为1为一组，为0为另一组，再异或到整个数组上
+    两组的结果分别是两个只出现一次的数
+
+实现：
+
+int* singleNumber(int* nums, int numsSize, int* returnSize){
+    int* pret = calloc(2, sizeof(int));
+
+    int ret = 0;
+    for(int i = 0; i < numsSize; ++i)
+    {
+        ret ^= nums[i];
+    }
+
+    int pos = 0;
+
+    for(pos = 0; pos < 32; ++pos)
+    {
+        if (((ret >> pos) & 1) == 1)
+            break;
+    }
+
+    for(int i = 0; i < numsSize; ++i)
+    {
+        if ((nums[i] >> pos) & 1 == 1)
+        {
+            pret[0] ^= nums[i];
+        }
+        else
+        {
+            pret[1] ^= nums[i];
+        }
+    }
+    *returnSize = 2;
+    return pret;
+}
+
+*/
+
+
+牛客：倒数第k个元素
+	https://www.nowcoder.com/practice/529d3ae5a407492994ad2a246518148a?tpId=13&&tqId=11167&rp=2&ru=/activity/oj&qru=/ta/coding-interviews/question-ranking
+/*
+
+输出链表倒数第k个元素
+
+思路：
+    两个指针(也算是快慢指针)，让快指针，现象前走k步，之后两个指针一起走
+    当快指针 == NULL 时，慢指针就指向了倒数底k个元素
+
+    特殊情况：链表x个元素， k > x
+
+实现：
+
+    ListNode* FindKthToTail(ListNode* pListHead, int k)
+    ListNode* slow = pListHead, *fast = pListHead;
+    while(k--)
+    {
+        if (fast != NULL)
+            fast = fast->next;
+        else
+            return NULL;
+    }
+    while(fast != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+    return slow;
+    
+*/
+
+
+
+CM11 链表分割
+
+
+OR36 链表的回文结构
+/*
+
+回文链表(对称链表)：
+
+思路：
+	拿出后半部分 逆置 跟前半部分比较
+
+实现：
+
+ListNode* func(ListNode* pHead)
+{
+	ListNode* NewNode = nullptr;
+	ListNode* cur = pHead;
+
+	while(cur)
+	{
+		ListNode* next = cur->next;
+		cur->next = NewNode;
+
+		NewNode = cur;
+		cur = next;
+	}
+	return NewNode;
+}
+
+class PalindromeList {
+public:
+	bool chkPalindrome(ListNode* A)
+	{
+
+		ListNode* slow = A;
+		ListNode* fast = A;
+		ListNode* prve = nullptr;
+		while(fast && fast->next)
+		{
+			prve = slow;
+			slow = slow->next;
+			fast = fast->next->next;
+		}
+
+		prve->next = nullptr;
+		slow = func(slow);
+
+		while(A)
+		{
+			if (A->val != slow->val)
+			{
+				return false;
+			}
+			else
+			{
+				A = A->next;
+				slow = slow->next;
+			}
+		}
+		return true;
+		}
+};
+
+*/
+
+160.相交链表
+/*
+
+160.相交链表
+
+思路：
+	两个链表的尾节点相同（地址）
+	求出两个链表的长度，让长的链表先走两个链表长度之差步
+	之后两个一起走，看是否会在某处相同
+实现：
+struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *headB) {
+	ListNode* curA = headA, *curB = headB;
+	int la = 0, lb = 0;
+	while(curA)
+	{
+		++la;
+		curA = curA->next;
+	}
+	while(curB)
+	{
+		++lb;
+		curB = curB->next;
+	}
+	int grp = abs(la, lb);
+	LiseNode* longList = headA;
+	LiseNode* shortList = headB;
+	if (lb > la)
+	{
+		longList = headB;
+		shortList = headA;
+	}
+	while(grp--)
+	{
+		longList = longList->next;
+	}
+	while(longList)
+	{
+		if (longList != shortList)
+			return NULL;
+		longList = longList->next;
+		shortList = shortList->next;
+	}
+	return longList;
+}
+
+*/
+
+/*
+
+141.链表判环
+
+思路：
+	快慢指针，快指针一次走两步，慢指针一次走一步
+	如果快慢指针能相遇，则有环，否则无环
+
+实现：
+typedef struct ListNode ListNode;
+bool hasCycle(struct ListNode *head) {
+
+	ListNode* slow = head;
+	ListNode* fast = head;
+	while(fast && fast->next)
+	{
+		slow = slow->next;
+		fast = fast->next->next;
+		if (slow == fast)
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
+
+证明：
+	为什么快指针可以追上慢指针
+	为什么快指针要一次走两步，走三步、四步行不行？n步呢？
+
+	x - 1 距离最终一定会为 0 
+	但是 x - 2 / x - 3 
+	x为奇数  最终 不为 0 ， 计算距离任为奇数
+	x为偶数  最终 不为 0
+
+	极端情况下：可能就永远遇不到了
+*/
+
+
+/*
+https://www.nowcoder.com/questionTerminal/6e630519bf86480296d0f1c868d425ad
+环形链表返回环的入口节点
+思路：
+	思路一：写起来麻烦，理解简单
+		环内相遇，相遇点断开链表，
+		一个链表从头，断开处作为另一个链表
+		两个链表求叫相交节点
+
+	思路二：写起来简单，需要公式证明，理解
+		成环之前距离：L + 环内相遇点：X
+		慢指针路程 ： L + X
+		快指针路径 ： L + X + C(环的周长)
+		2 *（L + X） = L　＋　ｘ　＋　Ｃ
+		Ｌ　＝　Ｃ　－　Ｘ
+		相遇之后再走，另一个从头走，相遇的时候就是成环节点
+
+		２（Ｌ＋Ｘ）　＝　Ｌ＋Ｎ＊Ｃ＋Ｘ
+		Ｌ　＝　Ｎ＊Ｃ－Ｘ
+		
+
+实现：
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head == NULL){
+            return 0;
+        }
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while(fast != NULL && fast->next != NULL){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast){
+                break;
+            }
+        }
+        if(fast == NULL || fast->next == NULL){
+            return NULL;
+        }
+        slow = head;
+        while(slow != fast){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        return slow;
+    }
+};
+*/
+
+
+/*
+
+138. 随机链表的复制
+
+思路：
+	因为随机指针的缘故，我们很难知道随机指针指向的节点在我们当前节点的之前还是之后
+	1.拷贝节点，链到原节点的后面
+	2.处理拷贝节点的random
+	（拷贝节点都在原节点的后面，所以拷贝节点的random节点就在原节点的random节点的后面）
+	3.拆解出复制链表
+
+实现：
+typedef struct Node Node;
+struct Node* copyRandomList(struct Node* head) {
+    if (head == NULL)
+        return NULL;
+
+    Node* cur = head;
+    while(cur)
+    {
+        Node* copy = (Node*)malloc(sizeof(Node));
+        copy->next = NULL;
+        copy->random = NULL;
+        copy->val = cur->val;
+
+        Node* next = cur->next;
+        cur->next = copy;
+        copy->next = next;
+
+        cur = next;
+    }
+    // 到这个地方，拷贝链表和原链表就连起来了
+
+    // 处理random
+    cur = head;
+    while(cur)
+    {
+        Node* copy = cur->next;
+        if (cur->random != NULL)
+            copy->random = cur->random->next;
+        else
+            copy->random = NULL;
+
+
+        cur = cur->next->next;
+    }
+
+    cur = head;
+    Node* copyHead = cur->next;
+    while(cur)
+    {
+
+        Node* copy = cur->next;
+        Node* next = copy->next;
+
+        cur->next = next;
+        if (next)
+            copy->next = next->next;
+        else
+            copy->next = NULL;
+
+        cur = next;
+    }
+
+    return copyHead;
+}
+
+*/
+
+
+/*
+
+147. 对链表进行插入排序
+
+思路：
+    先将原链表的第一个元素拿下来，作为sortHead
+    之后再从head的下一个节点开始，拿其与sortHead比较，如果小于就直接头插
+    如果大于将向后比较：这个地方就存在一个中间插入和尾插
+    head的下一个节点cur，为了能向后走，就要存下来cur的下一个节点next，
+    直到cur == NULL 就停止循环
+
+实现：
+
+typedef struct ListNode ListNode;
+struct ListNode* insertionSortList(struct ListNode* head){
+    if(head == NULL || head->next == NULL)
+        return head;
+
+    //到这里，链表的元素最少也是两个
+    ListNode* sortHead = head;
+    ListNode* cur = head->next;
+    sortHead->next = NULL;
+
+    while(cur)
+    {
+        ListNode* next = cur->next;
+        // 把cur插入到sorthead链表中，并且保持有序
+
+        if (cur->val <= sortHead->val)
+        {
+            // 这里是头插
+            cur->next = sortHead;
+            sortHead = cur;
+        }
+        else
+        {
+        // 这里是中间插入和尾部插入
+            ListNode* sortprev = sortHead;
+            ListNode* sortCur = sortprev->next;
+            while (sortCur)
+            {
+                if (cur->val <= sortCur->val)
+                {
+                    sortprev->next = cur;
+                    cur->next = sortCur;
+                    break;
+                }
+                else
+                {
+                    sortprev = sortCur;
+                    sortCur = sortCur->next;
+                }
+            }
+
+            if (sortCur == NULL)
+            {
+            // 这个地方是尾插
+                sortprev->next = cur;
+                cur->next = NULL;
+            }
+        }
+        cur = next;
+    }
+    return sortHead;
+}
+*/
+
+
+链表完全去重
+	https://www.nowcoder.com/practice/71cef9f8b5564579bf7ed93fbe0b2024?tpId=295&tqId=663&ru=/exam/oj&qru=/ta/format-top101/question-ranking&sourceUrl=%2Fexam%2Foj
+
+/*
+
+链表完全去重
+    
+思路：
+    cur 和 next比较，不同向后移动，相同，next向后走，至不同处，删除，prev->next = next; cur = next;
+
+实现：
+
+ListNode* deleteDuplication(ListNode* head)
+{
+    if (head == NULL || head->next == NULL)
+        return head
+    ListNode* prev = NULL;
+    ListNode* cur = head;
+    ListNode* next = cur->next;
+
+    while (next)
+    {
+        if (cur->val != next->val)
+        {
+            prev = cur;
+            cur = cur->next;
+            next = next->next;
+        }
+        else
+        {
+            while (next != NULL && cur->val == next->val)
+            {
+                next = next->next;
+            }
+            if (prev != NULL)
+                prev->next = next;
+            else
+                head = next;
+
+            while(cur != next)
+            {
+                ListNode* del = cur;
+                cur = cur->next;
+                free(del);
+            }
+
+            if (next != NULL)
+                next = cur->next;
+        }
+    }
+}
+*/
+
+
+
+===============================================================================================
+
+
+20.有效的括号
+225. 用队列实现栈
+232. 用栈实现队列
+622. 设计循环队列
+
+
+===============================================================================================
+
+144. 二叉树的前序遍历
+965. 单值二叉树
+100. 相同的树
+101. 对称二叉树
+
+104. 二叉树的最大深度
+226. 翻转二叉树
+572. 另一棵树的子树
